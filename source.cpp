@@ -1,4 +1,4 @@
-#include "./Calculator.h"
+#include "./calculator.h"
 #include "./file_work/file_processor.h"
 
 #include <iostream>

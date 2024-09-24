@@ -132,7 +132,7 @@
     <ClCompile Include="source.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Calculator.h" />
+    <ClInclude Include="calculator.h" />
     <ClInclude Include="ExpressionEvaluator.h" />
     <ClInclude Include="operations\Operations.h" />
     <ClInclude Include="Tokenize.h" />
