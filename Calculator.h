@@ -6,26 +6,30 @@
 #include<map>
 #include<string>
 
-template<typename T>
-class Calculator {
-public:
-    Calculator(const std::string& expression, const Letters<T>& letters)
-        : expression(expression), letters(letters) {}
+namespace calc {
 
-    T solve() {
-        ExpressionEvaluator<T> evaluator;
+    template<typename T>
+    class Calculator {
+    public:
+        Calculator(const std::string& expression, const Letters<T>& letters)
+            : expression(expression), letters(letters) {}
 
-        evaluator.addOperator(std::make_shared<PlusOperator<T>>());
-        evaluator.addOperator(std::make_shared<MinusOperator<T>>());
-        evaluator.addOperator(std::make_shared<MultiplyOperator<T>>());
-        evaluator.addOperator(std::make_shared<DivideOperator<T>>());
+        T solve() {
+            ExpressionEvaluator<T> evaluator;
 
-        return evaluator.evaluate(expression, letters);
-    }
+            evaluator.addOperator(std::make_shared<PlusOperator<T>>());
+            evaluator.addOperator(std::make_shared<MinusOperator<T>>());
+            evaluator.addOperator(std::make_shared<MultiplyOperator<T>>());
+            evaluator.addOperator(std::make_shared<DivideOperator<T>>());
 
-private:
-    std::string expression;
-    std::map<std::string, T> letters;
-};
+            return evaluator.evaluate(expression, letters);
+        }
+
+    private:
+        std::string expression;
+        std::map<std::string, T> letters;
+    };
+
+}
 
 #endif // !TASK_1_CALCULATOR_H
