@@ -7,7 +7,7 @@ int main() {
     calc::ExpressionEvaluator<double> evaluator;
 
     try {
-        double result = evaluator.evaluate("(x + y) / 3 + 27", variables);
+        double result = evaluator.evaluate("(x + y) / 3 + sqrt(27, 3)", variables);
         std::cout << "Result: " << result << std::endl;
     }
     catch (const std::exception& e) {

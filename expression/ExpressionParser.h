@@ -21,37 +21,25 @@ namespace calc {
             int parenthesesCount = 0;
 
             for (char ch : expression) {
-                if (std::isspace(ch)) {
+                if (isSpace(ch)) {
                     continue;
                 }
                 else if (ch == '(') {
-                    if (!currentToken.empty()) {
-                        tokens.push_back(currentToken);
-                        currentToken.clear();
-                    }
+                    addCurrentToken(tokens, currentToken);
                     tokens.push_back(std::string(1, ch));
                     parenthesesCount++;
                 }
                 else if (ch == ')') {
-                    if (!currentToken.empty()) {
-                        tokens.push_back(currentToken);
-                        currentToken.clear();
-                    }
+                    addCurrentToken(tokens, currentToken);
                     tokens.push_back(std::string(1, ch));
                     parenthesesCount--;
                 }
                 else if (ch == ',') {
-                    if (!currentToken.empty()) {
-                        tokens.push_back(currentToken);
-                        currentToken.clear();
-                    }
+                    addCurrentToken(tokens, currentToken);
                     tokens.push_back(",");
                 }
                 else if (operatorFactory.isOperator(ch)) {
-                    if (!currentToken.empty()) {
-                        tokens.push_back(currentToken);
-                        currentToken.clear();
-                    }
+                    addCurrentToken(tokens, currentToken);
                     tokens.push_back(std::string(1, ch));
                 }
                 else {
@@ -59,9 +47,7 @@ namespace calc {
                 }
             }
 
-            if (!currentToken.empty()) {
-                tokens.push_back(currentToken);
-            }
+            addCurrentToken(tokens, currentToken);
 
             if (parenthesesCount != 0) {
                 throw std::runtime_error("The brackets are incorrectly placed in the expression.");
@@ -71,9 +57,19 @@ namespace calc {
         }
 
     private:
-    private:
         OperatorFactory<T> operatorFactory;
         FunctionFactory<T> functionFactory;
+
+        bool isSpace(char ch) const {
+            return std::isspace(static_cast<unsigned char>(ch));
+        }
+
+        void addCurrentToken(std::vector<std::string>& tokens, std::string& currentToken) const {
+            if (!currentToken.empty()) {
+                tokens.push_back(currentToken);
+                currentToken.clear();
+            }
+        }
     };
 }
 
