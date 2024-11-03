@@ -4,6 +4,9 @@
 *.exe
 *.pdb
 *.filters
+
 *.lastbuildstate
 *.tlog
 *.recipe
+*.ilk
+/calculat.ea9f26b4
