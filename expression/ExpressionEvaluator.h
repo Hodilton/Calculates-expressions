@@ -25,7 +25,7 @@ namespace calc {
             auto tokens = parser.parse(expression);
 
             for (const auto& token : tokens) {
-                if (token == "(") {
+                 if (token == "(") {
                     ops.push('(');
                 }
                 else if (token == ")") {
@@ -43,21 +43,8 @@ namespace calc {
                     ops.push(token[0]);
                 }
                 else if (functionFactory.isFunction(token)) {
-                    std::vector<T> args;
 
-                    while (!values.empty()) {
-                        args.push_back(values.top());
-                        values.pop();
-                    }
-                    std::reverse(args.begin(), args.end());
-
-                    std::cout << "Function called: " << token << " with args: ";
-                    for (const auto& arg : args) {
-                        std::cout << arg << " ";
-                    }
-                    std::cout << std::endl;
-
-                    values.push(functionFactory.getFunction(token)->apply(args));
+                    //values.push(functionFactory.getFunction(token)->apply(args));
                 }
                 else if (isNumber(token)) {
                     values.push(convertToNumber(token));

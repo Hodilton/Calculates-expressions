@@ -10,11 +10,6 @@ template <typename T>
 class SqrtFunction : public IFunction<T> {
 public:
     T apply(const std::vector<T>& args) const override {
-        
-        std::cout << "Sqrt function called with arguments: ";
-        for (const auto& ch : args) {
-            std::cout << ch;
-        } std::cout << std::endl;
 
         if (args.empty()) {
             throw std::runtime_error("Sqrt function requires at least one argument.");
