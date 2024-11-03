@@ -24,9 +24,6 @@ namespace calc {
             std::stack<char> ops;
             auto tokens = parser.parse(expression);
 
-            T temp = 0;
-            return temp;
-
             for (const auto& token : tokens) {
                 if (token == "(") {
                     ops.push('(');
