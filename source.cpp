@@ -1,23 +1,33 @@
-#include "./calculator.h"
-#include "./file_work/file_processor.h"
+#include "./expression/ExpressionEvaluator.h"
 
 #include <iostream>
 
 int main() {
-	auto expsn = file_work::File<Expression<int>>::read(
-		file_work::PathParams("data", "expression", "json"));
+    calc::VariableMap<double> variables = { {"x", 27}, {"y", 3} };
+    calc::ExpressionEvaluator<double> evaluator;
 
-    for (const auto& pair : expsn) {
-        const auto& expression = pair.first;
-        const auto& data = pair.second;
-
-        //std::cout << expression << std::endl;
-
-        Calculator<int> calculator(expression, data);
-        const auto result = calculator.solve();
-
-        std::cout << result;
+    try {
+        double result = evaluator.evaluate("(x + y) / 3 + 27", variables);
+        std::cout << "Result: " << result << std::endl;
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
     }
 
-	return 0;
+    /*auto expsn = file_work::File<Expression<int>>::read(
+    file_work::PathParams("data", "expression", "json"));
+
+    for (const auto& pair : expsn) {
+    const auto& expression = pair.first;
+    const auto& data = pair.second;
+
+    std::cout << expression << std::endl;
+
+    Calculator<int> calculator(expression, data);
+    const auto result = calculator.solve();
+
+    std::cout << result;
+    }*/
+
+    return 0;
 }

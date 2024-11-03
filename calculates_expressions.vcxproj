@@ -104,7 +104,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Barsuk\Documents\GitHub\Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\barsuk\Documents\GitHub;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,16 +129,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Types.h" />
-    <ClCompile Include="source.cpp" />
+    <ClCompile Include="expression\Types.h" />
+    <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="calculator.h" />
-    <ClInclude Include="ExpressionEvaluator.h" />
-    <ClInclude Include="operations\Operations.h" />
-    <ClInclude Include="Tokenize.h" />
+    <ClInclude Include="expression\ExpressionEvaluator.h" />
+    <ClInclude Include="expression\ExpressionParser.h" />
+    <ClInclude Include="functions\FunctionFactory.h" />
+    <ClInclude Include="functions\Functions.h" />
+    <ClInclude Include="functions\IFunction.h" />
+    <ClInclude Include="operators\IOperator.h" />
+    <ClInclude Include="operators\OperatorFactory.h" />
+    <ClInclude Include="operators\Operators.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".gitignore" />
     <None Include="data\expression.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
