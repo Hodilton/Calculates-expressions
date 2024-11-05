@@ -7,7 +7,7 @@ int main() {
     calc::ExpressionEvaluator<double> evaluator;
 
     try {
-        double result = evaluator.evaluate("(x + y) / 3 + 2 * y", variables);
+        double result = evaluator.evaluate("5 + sqrt((x + y) / 3 + 2 * y, 2) + 5", variables);
         std::cout << "Result: " << result << std::endl;
     }
     catch (const std::exception& e) {

@@ -138,6 +138,8 @@
     <ClInclude Include="functions\FunctionFactory.h" />
     <ClInclude Include="functions\Functions.h" />
     <ClInclude Include="functions\IFunction.h" />
+    <ClInclude Include="number\INumber.h" />
+    <ClInclude Include="number\Number.h" />
     <ClInclude Include="operators\IOperator.h" />
     <ClInclude Include="operators\OperatorFactory.h" />
     <ClInclude Include="operators\Operators.h" />
