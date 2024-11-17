@@ -67,10 +67,14 @@ namespace calc {
                     auto arg2Expr = *(std::next(it, 4));
                     it = std::next(it, 5);
 
-                    T arg1 = *(evaluate(arg1Expr, variables));
-                    T arg2 = *(evaluate(arg2Expr, variables));
+                    auto arg1 = evaluate(arg1Expr, variables);
+                    auto arg2 = evaluate(arg2Expr, variables);
 
-                    values.push(functionFactory.getFunction(token)->apply({arg1, arg2}));
+                    if (!arg1 || !arg2) {
+                        return std::nullopt;
+                    }
+
+                    values.push(functionFactory.getFunction(token)->apply({*arg1, *arg2}));
                 }
                 else if (number.isNumber(token)) {
                     values.push(number.convertToNumber(token));
