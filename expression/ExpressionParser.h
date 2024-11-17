@@ -10,8 +10,8 @@
 #include <string>
 #include <vector>
 #include <optional>
-
-#include <cctype>   
+#include <stack>
+#include <cctype>
 
 namespace calc {
 
@@ -25,28 +25,48 @@ namespace calc {
         std::optional<VariableMap<T>> variables;
 
     public:
-        ExpressionParser(): operatorFactory(), functionFactory(), variables(std::nullopt) {}
+        ExpressionParser() : operatorFactory(), functionFactory(), variables(std::nullopt) {}
         ExpressionParser(VariableMap<T>* varMap) : operatorFactory(), functionFactory(), variables(varMap) {}
 
         std::vector<std::string> parse(const std::string& expression) const {
             std::vector<std::string> tokens;
             std::string currentToken;
+            std::stack<char> parenthesesStack;
 
-            int parenthesesCount = 0;
+            for (size_t i = 0; i < expression.length(); ++i) {
+                char ch = expression[i];
 
-            for (char ch : expression) {
                 if (isSpace(ch)) {
                     continue;
                 }
-                else if (ch == '(') {
+
+                if (ch == '(') {
                     addCurrentToken(tokens, currentToken);
-                    tokens.push_back(std::string(1, ch));
-                    parenthesesCount++;
+                    parenthesesStack.push('(');
+
+                    if (!tokens.empty() && functionFactory.isFunction(tokens.back())) {
+                        auto [arg1, arg2] = extractFunctionArgs(expression, i);
+
+                        tokens.push_back("(");
+                        tokens.push_back(arg1);
+                        tokens.push_back(",");
+                        tokens.push_back(arg2);
+                        tokens.push_back(")");
+                        i += arg1.length() + arg2.length() + 2; // Пропускаем обработанные символы (запятая и закрывающая скобка).
+                        parenthesesStack.pop(); // Закрывающая скобка уже обработана.
+
+                        continue;
+                    }
+                 
+                    tokens.push_back("(");                                  
                 }
                 else if (ch == ')') {
                     addCurrentToken(tokens, currentToken);
-                    tokens.push_back(std::string(1, ch));
-                    parenthesesCount--;
+                    tokens.push_back(")");
+                    if (parenthesesStack.empty() || parenthesesStack.top() != '(') {
+                        throw std::runtime_error("Mismatched parentheses in the expression.");
+                    }
+                    parenthesesStack.pop();
                 }
                 else if (ch == ',') {
                     addCurrentToken(tokens, currentToken);
@@ -63,8 +83,8 @@ namespace calc {
 
             addCurrentToken(tokens, currentToken);
 
-            if (parenthesesCount != 0) {
-                throw std::runtime_error("The brackets are incorrectly placed in the expression.");
+            if (!parenthesesStack.empty()) {
+                throw std::runtime_error("Mismatched parentheses in the expression.");
             }
 
             return tokens;
@@ -104,8 +124,57 @@ namespace calc {
                 return;
             }
             else {
-                throw std::runtime_error("Invalid function found: " + token + ".");
+                throw std::runtime_error("Invalid function or token found: " + token + ".");
             }
+        }
+
+        std::pair<std::string, std::string> extractFunctionArgs(const std::string& expression, size_t startIdx) const {
+            size_t start = expression.find('(', startIdx);
+
+            if (start == std::string::npos) {
+                throw std::invalid_argument("Function must have brackets and arguments.");
+            }
+
+            start += 1; // Переходим за открывающую скобку.
+            std::stack<char> brackets;
+            std::string beforeComma, afterComma;
+            bool foundComma = false;
+
+            for (size_t i = start; i < expression.size(); ++i) {
+                char ch = expression[i];
+
+                if (ch == '(') {
+                    brackets.push(ch);
+                }
+                else if (ch == ')') {
+                    if (!brackets.empty()) {
+                        brackets.pop();
+                    }
+                    else {
+                        if (!foundComma) {
+                            throw std::invalid_argument("Function must have arguments separated by a comma.");
+                        }
+                        break;
+                    }
+                }
+                else if (ch == ',' && brackets.empty()) {
+                    foundComma = true;
+                    continue;
+                }
+
+                if (foundComma) {
+                    afterComma += ch;
+                }
+                else {
+                    beforeComma += ch;
+                }
+            }
+
+            if (!foundComma) {
+                throw std::invalid_argument("Function must have two arguments separated by a comma.");
+            }
+
+            return { beforeComma, afterComma };
         }
     };
 }

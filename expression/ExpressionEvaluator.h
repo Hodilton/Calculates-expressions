@@ -32,7 +32,10 @@ namespace calc {
             parser.setVariables(variables);
             auto tokens = parser.parse(expression);
 
-            for (const auto& token : tokens) {
+
+            for (size_t i = 0; i < tokens.size(); ++i) {
+                std::string token = tokens[i];
+
                 if (token == "(") {
                     operators.push('(');
                 }
@@ -51,8 +54,9 @@ namespace calc {
                     operators.push(token[0]);
                 }
                 else if (functionFactory.isFunction(token)) {
-                    auto remainingExpression = expression.substr(expression.find(token) + token.length());
-                    auto [arg1Expr, arg2Expr] = extractFunctionArgs(remainingExpression, token);
+                    auto arg1Expr = tokens[i + 2];
+                    auto arg2Expr = tokens[i + 4];
+                    i += 5;
 
                     T arg1 = evaluate(arg1Expr, variables);
                     T arg2 = evaluate(arg2Expr, variables);
@@ -87,59 +91,6 @@ namespace calc {
 
         int precedence(char op) const {
             return (op == '+' || op == '-') ? 1 : (op == '*' || op == '/') ? 2 : 0;
-        }
-
-        std::pair<std::string, std::string> extractFunctionArgs(const std::string& expression,
-                                                                   const std::string& function) {
-            std::size_t start = expression.find('(');
-
-            if (start == std::string::npos) {
-                throw std::invalid_argument("The function "
-                    + function
-                    + " must have brackets: "
-                    + function + "(x, y).");
-            }
-
-            start += 1;
-            std::stack<char> brackets;
-            std::string beforeComma, afterComma;
-            bool foundComma = false;
-
-            for (std::size_t i = start; i < expression.size(); ++i) {
-                char ch = expression[i];
-
-                if (ch == '(') {
-                    brackets.push(ch);
-                }
-                else if (ch == ')') {
-                    if (!brackets.empty()) {
-                        brackets.pop();
-                    }
-                    else {
-                        break;
-                    }
-                }
-                else if (ch == ',' && brackets.empty()) {
-                    foundComma = true;
-                    continue;
-                }
-
-                if (foundComma) {
-                    afterComma += ch;
-                }
-                else {
-                    beforeComma += ch;
-                }
-            }
-
-            if (!foundComma) {
-                throw std::invalid_argument("The function "
-                    + function
-                    + " must have arguments: "
-                    + function + "(x, y).");
-            }
-
-            return { beforeComma, afterComma };
         }
     };
 }
