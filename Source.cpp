@@ -4,10 +4,10 @@
 
 int main() {
     calc::VariableMap<double> variables = { {"x", 27}, {"y", 3} };
-    calc::ExpressionEvaluator<double> evaluator;
+    calc::Evaluator<double> eval;
 
     try {
-        double result = evaluator.evaluate("5 + sqrt((x + y) / 3 + 2 * y, 2) + 5", variables);
+        auto result = eval.evaluate("5 + sqrt((x + y) / 3 + 2 * y, 2) + 5", variables);
         std::cout << "Result: " << result << std::endl;
     }
     catch (const std::exception& e) {

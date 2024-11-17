@@ -5,7 +5,7 @@
 
 #include <cmath>
 
-namespace cacl::functions {
+namespace calc::functions {
 
     template <typename T>
     class SqrtFunction : public IFunction<T> {

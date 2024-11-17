@@ -1,5 +1,5 @@
-#ifndef EXPRESSION_EVALUATOR_H
-#define EXPRESSION_EVALUATOR_H
+#ifndef CALC_EVALUATOR_H
+#define CALC_EVALUATOR_H
 
 #include "../operators/OperatorFactory.h"
 #include "../functions/FunctionFactory.h"
@@ -8,33 +8,40 @@
 #include "./Parser.h"
 #include "./Types.h"
 
-#include <stack>
 #include <map>
-#include <stdexcept>
+#include <stack>
 #include <algorithm> 
+#include <stdexcept>
+#include <iostream>
 
 namespace calc {
 
     template <typename T>
-    class ExpressionEvaluator {
+    class Evaluator {
     private:
         operators::OperatorFactory<T> operatorFactory;
         functions::FunctionFactory<T> functionFactory;
         numbers::Number<T> number;
 
-        ExpressionParser<T> parser;
+        Parser<T> parser;
 
     public:
         T evaluate(const std::string& expression, const VariableMap<T>& variables) {
             std::stack<T> values;
             std::stack<char> operators;
+            std::vector<std::string> tokens;
 
             parser.setVariables(variables);
-            auto tokens = parser.parse(expression);
 
+            try { 
+                tokens = parser.parse(expression);
+            }
+            catch (const std::exception& e) {
+                std::cerr << "Error: " << e.what() << std::endl;
+            }
 
-            for (size_t i = 0; i < tokens.size(); ++i) {
-                std::string token = tokens[i];
+            for (auto it = tokens.begin(); it != tokens.end(); ++it) {
+                const std::string& token = *it;
 
                 if (token == "(") {
                     operators.push('(');
@@ -54,9 +61,9 @@ namespace calc {
                     operators.push(token[0]);
                 }
                 else if (functionFactory.isFunction(token)) {
-                    auto arg1Expr = tokens[i + 2];
-                    auto arg2Expr = tokens[i + 4];
-                    i += 5;
+                    auto arg1Expr = *(std::next(it, 2));
+                    auto arg2Expr = *(std::next(it, 4));
+                    it = std::next(it, 5);
 
                     T arg1 = evaluate(arg1Expr, variables);
                     T arg2 = evaluate(arg2Expr, variables);
@@ -90,9 +97,11 @@ namespace calc {
         }
 
         int precedence(char op) const {
-            return (op == '+' || op == '-') ? 1 : (op == '*' || op == '/') ? 2 : 0;
+            return (op == '+' || op == '-')
+                ? 1
+                : (op == '*' || op == '/')? 2 : 0;
         }
     };
 }
 
-#endif // !EXPRESSION_EVALUATOR_H
+#endif // !CALC_EVALUATOR_H

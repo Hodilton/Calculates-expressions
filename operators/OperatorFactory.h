@@ -3,8 +3,8 @@
 
 #include "./Operators.h"
 
-#include <string>
 #include <map>
+#include <string>
 #include <stdexcept>
 #include <memory>
 

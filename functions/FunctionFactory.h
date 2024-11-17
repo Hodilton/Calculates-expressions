@@ -5,8 +5,8 @@
 
 #include <map>
 #include <string>
-#include <memory>
 #include <stdexcept>
+#include <memory>
 
 namespace calc::functions {
 

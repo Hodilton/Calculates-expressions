@@ -1,5 +1,5 @@
-#ifndef EXPRESSION_PARSER_H
-#define EXPRESSION_PARSER_H
+#ifndef CALC_PARSER_H
+#define CALC_PARSER_H
 
 #include "../operators/OperatorFactory.h"
 #include "../functions/FunctionFactory.h"
@@ -9,14 +9,14 @@
 
 #include <string>
 #include <vector>
-#include <optional>
 #include <stack>
+#include <optional>
 #include <cctype>
 
 namespace calc {
 
     template <typename T>
-    class ExpressionParser {
+    class Parser {
     private:
         operators::OperatorFactory<T> operatorFactory;
         functions::FunctionFactory<T> functionFactory;
@@ -25,16 +25,17 @@ namespace calc {
         std::optional<VariableMap<T>> variables;
 
     public:
-        ExpressionParser() : operatorFactory(), functionFactory(), variables(std::nullopt) {}
-        ExpressionParser(VariableMap<T>* varMap) : operatorFactory(), functionFactory(), variables(varMap) {}
+        Parser() : operatorFactory(), functionFactory(), variables(std::nullopt) {}
+        Parser(VariableMap<T>* variables) : operatorFactory(), functionFactory(), variables(variables) {}
 
         std::vector<std::string> parse(const std::string& expression) const {
             std::vector<std::string> tokens;
             std::string currentToken;
-            std::stack<char> parenthesesStack;
 
-            for (size_t i = 0; i < expression.length(); ++i) {
-                char ch = expression[i];
+            std::stack<char> brackets;
+
+            for (auto it = expression.begin(); it != expression.end(); ++it) {
+                char ch = *it;
 
                 if (isSpace(ch)) {
                     continue;
@@ -42,19 +43,18 @@ namespace calc {
 
                 if (ch == '(') {
                     addCurrentToken(tokens, currentToken);
-                    parenthesesStack.push('(');
+                    brackets.push('(');
 
                     if (!tokens.empty() && functionFactory.isFunction(tokens.back())) {
-                        auto [arg1, arg2] = extractFunctionArgs(expression, i);
+                        auto [arg1, arg2] = extractFunctionArgs(it, expression.end());
 
                         tokens.push_back("(");
                         tokens.push_back(arg1);
                         tokens.push_back(",");
                         tokens.push_back(arg2);
                         tokens.push_back(")");
-                        i += arg1.length() + arg2.length() + 2; // Пропускаем обработанные символы (запятая и закрывающая скобка).
-                        parenthesesStack.pop(); // Закрывающая скобка уже обработана.
 
+                        brackets.pop();
                         continue;
                     }
                  
@@ -63,14 +63,12 @@ namespace calc {
                 else if (ch == ')') {
                     addCurrentToken(tokens, currentToken);
                     tokens.push_back(")");
-                    if (parenthesesStack.empty() || parenthesesStack.top() != '(') {
-                        throw std::runtime_error("Mismatched parentheses in the expression.");
+
+                    if (brackets.empty() || brackets.top() != '(') {
+                        throw std::runtime_error("Mismatched brackets in the expression.");
                     }
-                    parenthesesStack.pop();
-                }
-                else if (ch == ',') {
-                    addCurrentToken(tokens, currentToken);
-                    tokens.push_back(",");
+
+                    brackets.pop();
                 }
                 else if (operatorFactory.isOperator(ch)) {
                     addCurrentToken(tokens, currentToken);
@@ -83,15 +81,15 @@ namespace calc {
 
             addCurrentToken(tokens, currentToken);
 
-            if (!parenthesesStack.empty()) {
-                throw std::runtime_error("Mismatched parentheses in the expression.");
+            if (!brackets.empty()) {
+                throw std::runtime_error("Mismatched brackets in the expression.");
             }
 
             return tokens;
         }
 
-        void setVariables(const VariableMap<T>& varMap) {
-            variables = varMap;
+        void setVariables(const VariableMap<T>& variables) {
+            this->variables = variables;
         }
 
     private:
@@ -128,20 +126,20 @@ namespace calc {
             }
         }
 
-        std::pair<std::string, std::string> extractFunctionArgs(const std::string& expression, size_t startIdx) const {
-            size_t start = expression.find('(', startIdx);
-
-            if (start == std::string::npos) {
+        std::pair<std::string, std::string> extractFunctionArgs(
+            std::string::const_iterator& it,
+            std::string::const_iterator end
+        ) const {
+            if (it == end || *it != '(') {
                 throw std::invalid_argument("Function must have brackets and arguments.");
             }
 
-            start += 1; // Переходим за открывающую скобку.
             std::stack<char> brackets;
             std::string beforeComma, afterComma;
             bool foundComma = false;
 
-            for (size_t i = start; i < expression.size(); ++i) {
-                char ch = expression[i];
+            for (++it; it != end; ++it) {
+                char ch = *it;
 
                 if (ch == '(') {
                     brackets.push(ch);
@@ -179,4 +177,4 @@ namespace calc {
     };
 }
 
-#endif // !EXPRESSION_PARSER_H
+#endif // !CALC_PARSER_H

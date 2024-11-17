@@ -1,5 +1,5 @@
-#ifndef TYPES_H
-#define TYPES_H
+#ifndef CALC_TYPES_H
+#define CALC_TYPES_H
 
 #include <map>
 #include <string>
@@ -15,4 +15,4 @@ namespace calc {
     using ExpressionMap = std::map<std::string, VariableMap<T>>;
 }
 
-#endif // !TYPES_H
+#endif // !CALC_TYPES_H
