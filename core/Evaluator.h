@@ -92,7 +92,12 @@ namespace calc {
                 operators.pop();
             }
 
-            return values.top();
+            if (!values.empty()) {
+                return values.top();
+            }
+            else {
+                return std::nullopt;
+            }
         }
 
     private:
