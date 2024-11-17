@@ -10,7 +10,5 @@ int main() {
         ? std::to_string(*result)
         : "no value.") << std::endl;
 
-
-
     return 0;
 }
