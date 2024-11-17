@@ -168,7 +168,7 @@ namespace calc {
                 }
             }
 
-            if (!foundComma) {
+            if (!foundComma || beforeComma.empty() || afterComma.empty()) {
                 throw std::invalid_argument("Function must have two arguments separated by a comma.");
             }
 

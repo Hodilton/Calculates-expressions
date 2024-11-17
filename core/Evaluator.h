@@ -10,6 +10,7 @@
 
 #include <map>
 #include <stack>
+#include <optional>
 #include <algorithm> 
 #include <stdexcept>
 #include <iostream>
@@ -26,7 +27,7 @@ namespace calc {
         Parser<T> parser;
 
     public:
-        T evaluate(const std::string& expression, const VariableMap<T>& variables) {
+        std::optional<T> evaluate(const std::string& expression, const VariableMap<T>& variables) {
             std::stack<T> values;
             std::stack<char> operators;
             std::vector<std::string> tokens;
@@ -38,6 +39,7 @@ namespace calc {
             }
             catch (const std::exception& e) {
                 std::cerr << "Error: " << e.what() << std::endl;
+                return std::nullopt;
             }
 
             for (auto it = tokens.begin(); it != tokens.end(); ++it) {
@@ -65,8 +67,8 @@ namespace calc {
                     auto arg2Expr = *(std::next(it, 4));
                     it = std::next(it, 5);
 
-                    T arg1 = evaluate(arg1Expr, variables);
-                    T arg2 = evaluate(arg2Expr, variables);
+                    T arg1 = *(evaluate(arg1Expr, variables));
+                    T arg2 = *(evaluate(arg2Expr, variables));
 
                     values.push(functionFactory.getFunction(token)->apply({arg1, arg2}));
                 }
@@ -76,9 +78,9 @@ namespace calc {
                 else if (variables.find(token) != variables.end()) {
                     values.push(variables.at(token));
                 }
-                else {
-                    throw std::runtime_error("Variable not found: " + token + ".");
-                }
+                //else {
+                //    throw std::runtime_error("Variable not found: " + token + ".");
+                //}
             }
 
             while (!operators.empty()) {
