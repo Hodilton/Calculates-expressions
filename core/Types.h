@@ -5,6 +5,8 @@
 #include <string>
 
 namespace calc {
+    template<typename T>
+    using FunctionMap = std::map<std::string, std::string>;
 
     template<typename T>
     using VariableMap = std::map<std::string, T>;

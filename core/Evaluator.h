@@ -5,7 +5,7 @@
 #include "../functions/FunctionFactory.h"
 #include "../number/Number.h"
 
-#include "./ExpressionParser.h"
+#include "./Parser.h"
 #include "./Types.h"
 
 #include <stack>
@@ -18,9 +18,9 @@ namespace calc {
     template <typename T>
     class ExpressionEvaluator {
     private:
-        OperatorFactory<T> operatorFactory;
-        FunctionFactory<T> functionFactory;
-        Number<T> number;
+        operators::OperatorFactory<T> operatorFactory;
+        functions::FunctionFactory<T> functionFactory;
+        numbers::Number<T> number;
 
         ExpressionParser<T> parser;
 

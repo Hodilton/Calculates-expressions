@@ -1,15 +1,17 @@
-#ifndef INUMBER_H
-#define INUMBER_H
+#ifndef CALC_INUMBER_H
+#define CALC_INUMBER_H
 
 #include <string>
 
-template <typename T>
-class INumber {
-public:
-    virtual bool isNumber(const std::string& token) const = 0;
-    virtual T convertToNumber(const std::string& token) const = 0;
+namespace calc::numbers {
 
-    virtual ~INumber() = default;
-};
+    template <typename T>
+    class INumber {
+    public:
+        virtual bool isNumber(const std::string& token) const = 0;
+        virtual T convertToNumber(const std::string& token) const = 0;
+        virtual ~INumber() = default;
+    };
+}
 
-#endif // !INUMBER_H
+#endif // !CALC_INUMBER_H

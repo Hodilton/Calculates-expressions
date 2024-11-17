@@ -18,9 +18,9 @@ namespace calc {
     template <typename T>
     class ExpressionParser {
     private:
-        OperatorFactory<T> operatorFactory;
-        FunctionFactory<T> functionFactory;
-        Number<T> number;
+        operators::OperatorFactory<T> operatorFactory;
+        functions::FunctionFactory<T> functionFactory;
+        numbers::Number<T> number;
 
         std::optional<VariableMap<T>> variables;
 

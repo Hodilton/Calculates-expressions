@@ -129,12 +129,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="expression\Types.h" />
+    <ClCompile Include="core\Types.h" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="expression\ExpressionEvaluator.h" />
-    <ClInclude Include="expression\ExpressionParser.h" />
+    <ClInclude Include="core\Evaluator.h" />
+    <ClInclude Include="core\Parser.h" />
     <ClInclude Include="functions\FunctionFactory.h" />
     <ClInclude Include="functions\Functions.h" />
     <ClInclude Include="functions\IFunction.h" />

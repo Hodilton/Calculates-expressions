@@ -1,15 +1,14 @@
-#ifndef FUNCTION_FACTORY_H
-#define FUNCTION_FACTORY_H
+#ifndef CALC_FUNCTION_FACTORY_H
+#define CALC_FUNCTION_FACTORY_H
 
 #include "./Functions.h"
 
 #include <map>
 #include <string>
-
 #include <memory>
 #include <stdexcept>
 
-namespace calc {
+namespace calc::functions {
 
     template <typename T>
     class FunctionFactory {
@@ -20,9 +19,11 @@ namespace calc {
 
         IFunction<T>* getFunction(const std::string& name) const {
             auto it = functions.find(name);
+
             if (it != functions.end()) {
                 return it->second.get();
             }
+
             throw std::runtime_error("Unknown function: " + name);
         }
 
@@ -36,4 +37,4 @@ namespace calc {
 
 }
 
-#endif // !FUNCTION_FACTORY_H
+#endif // !CALC_FUNCTION_FACTORY_H

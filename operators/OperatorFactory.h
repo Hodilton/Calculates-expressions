@@ -1,15 +1,14 @@
-#ifndef OPERATOR_FACTORY_H
-#define OPERATOR_FACTORY_H
+#ifndef CALC_OPERATOR_FACTORY_H
+#define CALC_OPERATOR_FACTORY_H
 
 #include "./Operators.h"
 
 #include <string>
 #include <map>
-
 #include <stdexcept>
 #include <memory>
 
-namespace calc {
+namespace calc::operators {
 
     template <typename T>
     class OperatorFactory {
@@ -23,9 +22,11 @@ namespace calc {
 
         IOperator<T>* getOperator(char symbol) const {
             auto it = operators.find(symbol);
+
             if (it != operators.end()) {
                 return it->second.get();
             }
+
             throw std::runtime_error("Unknown operator: " + std::string(1, symbol));
         }
 
@@ -38,4 +39,4 @@ namespace calc {
     };
 }
 
-#endif // !OPERATOR_FACTORY_H
+#endif // !CALC_OPERATOR_FACTORY_H
