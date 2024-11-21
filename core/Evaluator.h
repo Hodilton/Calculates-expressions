@@ -34,13 +34,7 @@ namespace calc {
 
             parser.setVariables(variables);
 
-            try { 
-                tokens = parser.parse(expression);
-            }
-            catch (const std::exception& e) {
-                std::cerr << "Error: " << e.what() << std::endl;
-                return std::nullopt;
-            }
+            tokens = parser.parse(expression);
 
             for (auto it = tokens.begin(); it != tokens.end(); ++it) {
                 const std::string& token = *it;

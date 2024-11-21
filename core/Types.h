@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 
-namespace calc {
+namespace calc::types {
     template<typename T>
     using FunctionMap = std::map<std::string, std::string>;
 
