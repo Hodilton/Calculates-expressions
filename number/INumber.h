@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace calc::numbers {
+namespace calc::number {
 
     template <typename T>
     class INumber {

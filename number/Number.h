@@ -5,7 +5,7 @@
 
 #include <sstream>
 
-namespace calc::numbers {
+namespace calc::number {
 
     template <typename T>
     class Number : public INumber<T> {

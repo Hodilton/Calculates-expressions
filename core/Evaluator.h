@@ -3,6 +3,7 @@
 
 #include "../operators/OperatorFactory.h"
 #include "../functions/FunctionFactory.h"
+#include "../constants/ConstantFactory.h"
 #include "../number/Number.h"
 
 #include "./Parser.h"
@@ -22,12 +23,13 @@ namespace calc {
     private:
         operators::OperatorFactory<T> operatorFactory;
         functions::FunctionFactory<T> functionFactory;
-        numbers::Number<T> number;
+        constants::ConstantFactory<T> constantFactory;
+        number::Number<T> number;
 
         Parser<T> parser;
 
     public:
-        std::optional<T> evaluate(const std::string& expression, const VariableMap<T>& variables) {
+        std::optional<T> evaluate(const std::string& expression, const types::VariableMap<T>& variables) {
             std::stack<T> values;
             std::stack<char> operators;
             std::vector<std::string> tokens;
@@ -70,12 +72,15 @@ namespace calc {
 
                     values.push(functionFactory.getFunction(token)->apply({*arg1, *arg2}));
                 }
-                else if (number.isNumber(token)) {
-                    values.push(number.convertToNumber(token));
+                else if (constantFactory.isConstant(token)) {
+                    values.push(constantFactory.getConstant(token)->value());
                 }
                 else if (variables.find(token) != variables.end()) {
                     values.push(variables.at(token));
                 }
+                else if (number.isNumber(token)) {
+                    values.push(number.convertToNumber(token));
+                }             
                 //else {
                 //    throw std::runtime_error("Variable not found: " + token + ".");
                 //}

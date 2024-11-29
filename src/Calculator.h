@@ -8,7 +8,7 @@ namespace calc {
     class Calculator {
     public:
         template <typename T>
-        std::optional<T> evaluate(const std::string& expression, const VariableMap<T>& variables) const {
+        std::optional<T> evaluate(const std::string& expression, const types::VariableMap<T>& variables) const {
             calc::Evaluator<T> eval;
 
             try {
