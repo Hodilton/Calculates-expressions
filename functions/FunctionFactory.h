@@ -17,7 +17,7 @@ namespace calc::functions {
             functions["sqrt"] = std::make_unique<SqrtFunction<T>>();
         }
 
-        IFunction<T>* getFunction(const std::string& name) const {
+        const IFunction<T>* getFunction(const std::string& name) const {
             auto it = functions.find(name);
 
             if (it != functions.end()) {

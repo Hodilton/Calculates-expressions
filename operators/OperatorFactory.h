@@ -20,7 +20,7 @@ namespace calc::operators {
             operators['/'] = std::make_unique<DivisionOperator<T>>();
         }
 
-        IOperator<T>* getOperator(char symbol) const {
+        const IOperator<T>* getOperator(char symbol) const {
             auto it = operators.find(symbol);
 
             if (it != operators.end()) {
