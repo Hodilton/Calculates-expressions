@@ -106,6 +106,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\barsuk\Documents\GitHub;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,6 +134,9 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="constants\ConstantFactory.h" />
+    <ClInclude Include="constants\Constants.h" />
+    <ClInclude Include="constants\IConstant.h" />
     <ClInclude Include="src\Calculator.h" />
     <ClInclude Include="core\Evaluator.h" />
     <ClInclude Include="core\Parser.h" />
