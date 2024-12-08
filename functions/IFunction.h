@@ -9,6 +9,7 @@ namespace calc::functions {
     class IFunction {
     public:
         virtual T apply(const std::vector<T>& args) const = 0;
+        virtual const size_t requiredArgCount() const = 0;
         virtual ~IFunction() = default;
     };
 }
