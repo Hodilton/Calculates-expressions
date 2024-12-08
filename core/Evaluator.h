@@ -52,25 +52,38 @@ namespace calc {
                     operators.pop();
                 }
                 else if (operatorFactory.isOperator(token[0])) {
-                    while (!operators.empty() && precedence(operators.top()) >= precedence(token[0])) {
+                    while (!operators.empty() &&
+                            precedence(operators.top()) >= precedence(token[0])) {
                         applyTopOperator(values, operators.top());
                         operators.pop();
                     }
                     operators.push(token[0]);
                 }
                 else if (functionFactory.isFunction(token)) {
-                    auto arg1Expr = *(std::next(it, 2));
-                    auto arg2Expr = *(std::next(it, 4));
-                    it = std::next(it, 5);
+                    std::vector<T> args;
 
-                    auto arg1 = evaluate(arg1Expr, variables);
-                    auto arg2 = evaluate(arg2Expr, variables);
+                    for (it += 2; it != tokens.end() && *it != ")"; ++it) {
+                        auto argValue = evaluate(*it, variables);
 
-                    if (!arg1 || !arg2) {
-                        return std::nullopt;
+                        if (!argValue) {
+                            return std::nullopt;
+                        }
+
+                        args.push_back(*argValue);
                     }
 
-                    values.push(functionFactory.getFunction(token)->apply({*arg1, *arg2}));
+                    //auto arg1Expr = *(std::next(it, 2));
+                    //auto arg2Expr = *(std::next(it, 4));
+                    //it = std::next(it, 5);
+
+                    //auto arg1 = evaluate(arg1Expr, variables);
+                    //auto arg2 = evaluate(arg2Expr, variables);
+
+                    //if (!arg1 || !arg2) {
+                    //    return std::nullopt;
+                    //}
+
+                    values.push(functionFactory.getFunction(token)->apply(args));
                 }
                 else if (constantFactory.isConstant(token)) {
                     values.push(constantFactory.getConstant(token)->value());

@@ -51,12 +51,10 @@ namespace calc {
                    
 
                     if (!tokens.empty() && functionFactory.isFunction(tokens.back())) {
-                        auto [arg1, arg2] = extractFunctionArgs(it, expression.end());
+                        auto args = extractFunctionArgs(it, expression.end(), tokens.back());
 
                         tokens.push_back("(");
-                        tokens.push_back(arg1);
-                        tokens.push_back(",");
-                        tokens.push_back(arg2);
+                        tokens.insert(tokens.end(), args.begin(), args.end());
                         tokens.push_back(")");
 
                         brackets.pop();
@@ -82,10 +80,6 @@ namespace calc {
                         throw std::runtime_error("Expression cannot start with an operator: " + std::string(1, ch));
                     }
 
-                    if (tokens.empty() || operatorFactory.isOperator(tokens.back()[0])) {
-                        throw std::runtime_error("Expression cannot end with an operator.");
-                    }
-
                     if (ch == '-' && isUnaryMinusContext(tokens)) {
                         handleUnaryMinus(tokens, currentToken, unaryMinusStack, brackets);
                         continue;
@@ -106,6 +100,10 @@ namespace calc {
 
             if (!brackets.empty()) {
                 throw std::runtime_error("Mismatched brackets in the expression.");
+            }
+
+            if (!tokens.empty() && operatorFactory.isOperator(tokens.back()[0])) {
+                throw std::runtime_error("Expression cannot end with an operator.");
             }
 
             return tokens;
@@ -140,7 +138,9 @@ namespace calc {
 
 
         void validateToken(const std::string& token) const {
-            if (token == "(" || token == ")" || token == ",") {
+            if (token.empty()) {
+                throw std::runtime_error("Token cannot be empty.");
+            } else if (token == "(" || token == ")" || token == ",") {
                 return;
             }
             else if (functionFactory.isFunction(token)) {
@@ -190,17 +190,21 @@ namespace calc {
         }
 
 
-        std::pair<std::string, std::string> extractFunctionArgs(
+        std::vector<std::string> extractFunctionArgs(
             std::string::const_iterator& it,
-            std::string::const_iterator end
+            std::string::const_iterator end,
+            std::string& function
         ) const {
             if (it == end || *it != '(') {
                 throw std::invalid_argument("Function must have brackets and arguments.");
             }
 
+            auto func = functionFactory.getFunction(function);
+            size_t requiredArgCount = func->requiredArgCount();
+
             std::stack<char> brackets;
-            std::string beforeComma, afterComma;
-            bool foundComma = false;
+            std::vector<std::string> arguments;
+            std::string currentArg;
 
             for (++it; it != end; ++it) {
                 char ch = *it;
@@ -213,34 +217,41 @@ namespace calc {
                         brackets.pop();
                     }
                     else {
-                        if (!foundComma) {
-                            throw std::invalid_argument("Function must have arguments separated by a comma.");
+                        if (!currentArg.empty() || !arguments.empty()) {
+                            arguments.push_back(currentArg);
+                            currentArg.clear();
                         }
                         break;
                     }
                 }
                 else if (ch == ',' && brackets.empty()) {
-                    if (foundComma) {
-                        throw std::invalid_argument("Too many commas in function arguments.");
+                    if (currentArg.empty()) {
+                        throw std::invalid_argument("Empty argument in function call.");
                     }
-
-                    foundComma = true;
-                    continue;
-                }
-
-                if (foundComma) {
-                    afterComma += ch;
+                    arguments.push_back(currentArg);
+                    currentArg.clear();
                 }
                 else {
-                    beforeComma += ch;
+                    currentArg += ch;
                 }
             }
 
-            if (!foundComma || beforeComma.empty() || afterComma.empty()) {
-                throw std::invalid_argument("Function must have two arguments separated by a comma.");
+            if (!currentArg.empty()) {
+                arguments.push_back(currentArg);
             }
 
-            return { beforeComma, afterComma };
+            //if (arguments.empty()) {
+            //    throw std::invalid_argument("Function must have at least one argument.");
+            //}
+
+            if (arguments.size() != requiredArgCount) {
+                throw std::invalid_argument(
+                    "Function '" + function + "' expects " + std::to_string(requiredArgCount) +
+                    " arguments, but " + std::to_string(arguments.size()) + " were provided."
+                );
+            }
+
+            return arguments;
         }
     };
 }
