@@ -17,6 +17,7 @@ namespace calc::functions {
             functions["sqrt1"] = std::make_unique<Sqrt1Function<T>>();
             functions["sqrt2"] = std::make_unique<Sqrt2Function<T>>();
             functions["pow1"] = std::make_unique<Pow1Function<T>>();
+            functions["pow"] = std::make_unique<Pow2Function<T>>();
             functions["pow2"] = std::make_unique<Pow2Function<T>>();
             functions["sin"] = std::make_unique<SinFunction<T>>();
             functions["cos"] = std::make_unique<CosFunction<T>>();
