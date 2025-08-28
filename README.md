@@ -2,16 +2,18 @@
 
 The algorythm for evaluating mathematical expressions with variables, functions, and operators.
 
-## Features
+## ✨ Features
 
 - Evaluates complex mathematical expressions
-- Supports constants (e.g., `e`, `pi`)
-- Supports variables (e.g., `x`, `y`)
-- Built-in functions (e.g., `pow`, `sin`)
-- Handles operator precedence and parentheses
-- Unary minus support
+- Supports **constants** (e.g., `e`, `pi`)
+- Supports **variables** (e.g., `x`, `y`)
+- Built-in **functions** (e.g., `pow`, `sin`)
+- Handles **operator precedence** and parentheses
+- **Unary minus** support
 - Type-safe templated design (works with `double`, `float`, etc.)
-## Examples
+
+## 📌 Examples
+
 1. Basic arithmetic
 ```cpp
 calc.evaluate("2 + 2 * 2", {});  // Returns 6
